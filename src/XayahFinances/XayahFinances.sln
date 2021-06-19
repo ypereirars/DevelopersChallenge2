@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XayahFinances.Services", "X
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XayahFinances.Infra", "XayahFinances.Infra\XayahFinances.Infra.csproj", "{B6986904-A5DE-47D6-BC1A-D7BDB1378B77}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XayahFinances.Domain", "XayahFinances.Domain\XayahFinances.Domain.csproj", "{B8D5CEE5-6340-40ED-B001-48BA248D345C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{B6986904-A5DE-47D6-BC1A-D7BDB1378B77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6986904-A5DE-47D6-BC1A-D7BDB1378B77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6986904-A5DE-47D6-BC1A-D7BDB1378B77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8D5CEE5-6340-40ED-B001-48BA248D345C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8D5CEE5-6340-40ED-B001-48BA248D345C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8D5CEE5-6340-40ED-B001-48BA248D345C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8D5CEE5-6340-40ED-B001-48BA248D345C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
