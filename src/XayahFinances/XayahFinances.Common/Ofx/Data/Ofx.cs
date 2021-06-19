@@ -26,5 +26,7 @@
         public string NewFileUid { get; set; }
         [OfxElement("SIGNONMSGSRSV1")]
         public OfxSignOnMessage SignOnMessage { get; set; }
+        [OfxElement("BANKMSGSRSV1")]
+        public OfxBankMessage BankMessage { get; set; }
     }
 }

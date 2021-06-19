@@ -55,5 +55,17 @@ namespace XayahFinances.Test
             Assert.Equal(new DateTimeOffset(2014, 03, 18, 10, 00, 00, new TimeSpan(-3, 0, 0)), ofx.SignOnMessage.SignOn.ServerDate);
             Assert.Equal("INFO", ofx.SignOnMessage.SignOn.Status.Severity);
         }
+
+        [Fact]
+        public void OFXShouldDeserializeBankInfoProperly()
+        {
+            var ofx = (Ofx)_ofxSerializer.Deserialize(_ofxFile);
+
+            Assert.NotNull(ofx.BankMessage);
+            Assert.NotNull(ofx.BankMessage.ResponseTranscation);
+            Assert.NotNull(ofx.BankMessage.ResponseTranscation.Response);
+            Assert.NotNull(ofx.BankMessage.ResponseTranscation.Status);
+            Assert.NotNull(ofx.BankMessage.ResponseTranscation.Response.AccountInfo);
+        }
     }
 }
