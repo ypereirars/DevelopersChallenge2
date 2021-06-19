@@ -22,69 +22,94 @@ namespace XayahFiances.Common
             string line;
             Stack ofxTags = new Stack();
             Regex bodyTagRegex = new Regex(@"<?(\/)?(\w+)[>:]?(.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            Regex dateRegex = new Regex(@"(\d+)\[([-+]\d+){0,3}.*\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-            var instance = Activator.CreateInstance(_type);
+            var instance = CreateInstance(_type);
+
             ofxTags.Push(instance);
 
             while ((line = stream.ReadLine()) != null)
             {
                 var bodyMatch = bodyTagRegex.Match(line.Trim());
 
-                var attributeName = "";
-                string attributeValue = null;
-                
-                if(bodyMatch.Success)
+                if (bodyMatch.Success)
                 {
                     var groups = bodyMatch.Groups;
 
                     if (groups[1].Value == "/")
-                    {
-                        var element = ofxTags.Peek();
-
-                        if (element.GetType().GetCustomAttribute<OfxAttribute>()?.Name == groups[2].Value)
-                        {
-                            ofxTags.Pop();
-                        }
-                    }
+                        PopTagIfClosing(ofxTags, groups);
                     else
                     {
-                        attributeName = groups[2].Value;
-                        attributeValue = groups[3].Value;
+                        string attributeName = groups[2].Value;
                         var element = ofxTags.Peek();
-
-                        var property = element.GetType().GetProperties().FirstOrDefault(prop => prop.GetCustomAttribute<OfxAttribute>(true)?.Name == attributeName);
-                        var attribute = property?.GetCustomAttribute<OfxAttribute>();
+                        PropertyInfo property = GetPropertyByAttributeName(attributeName, element);
 
                         if (property is null)
                             continue;
-                        
+
                         if (property.PropertyType.IsValueType || property.PropertyType == typeof(string))
                         {
-                            object value = attributeValue;
-                            if(property.PropertyType == typeof(DateTimeOffset))
-                            {
-                                attributeValue = dateRegex.Replace(attributeValue, "$1 $2");
-                                value = DateTimeOffset.ParseExact(attributeValue, "yyyyMMddHHmmss zz", null);
-                            }
-                            
-                            property.SetValue(element, Convert.ChangeType(value, property.PropertyType));
+                            SetValueToElement(groups[3].Value, element, property);
                         }
                         else
                         {
-                            var elementInstance = Activator.CreateInstance(property.PropertyType);
-                            property.SetValue(element, Convert.ChangeType(elementInstance, property.PropertyType));
+                            var elementInstance = InstantiateNewElement(element, property);
                             ofxTags.Push(elementInstance);
                         }
                     }
                 }
-                else
-                {
-                    continue;
-                }
             }
 
             return instance;
+        }
+
+        private static object CreateInstance(Type type) => Activator.CreateInstance(type);
+
+        private static void PopTagIfClosing(Stack ofxTags, GroupCollection groups)
+        {
+            var element = ofxTags.Peek();
+
+            if (GetAttributeFromElement(element)?.Name == groups[2].Value)
+            {
+                ofxTags.Pop();
+            }
+        }
+
+        private static OfxAttribute GetAttributeFromElement(object element)
+        {
+            return element.GetType().GetCustomAttribute<OfxAttribute>();
+        }
+
+        private static PropertyInfo GetPropertyByAttributeName(string attributeName, object element)
+        {
+            return element
+                .GetType()
+                .GetProperties()
+                .FirstOrDefault(prop => GetAttributeFromProperty(prop)?.Name == attributeName);
+        }
+
+        private static OfxAttribute GetAttributeFromProperty(PropertyInfo prop)
+        {
+            return prop.GetCustomAttribute<OfxAttribute>(true);
+        }
+
+        private static void SetValueToElement(string attributeValue, object element, PropertyInfo property)
+        {
+            object value = attributeValue;
+            if (property.PropertyType == typeof(DateTimeOffset))
+            {
+                Regex dateRegex = new Regex(@"(\d+)\[([-+]\d+){0,3}.*\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                attributeValue = dateRegex.Replace(attributeValue, "$1 $2");
+                value = DateTimeOffset.ParseExact(attributeValue, "yyyyMMddHHmmss zz", null);
+            }
+
+            property.SetValue(element, Convert.ChangeType(value, property.PropertyType));
+        }
+
+        private static object InstantiateNewElement(object element, PropertyInfo property)
+        {
+            var elementInstance = CreateInstance(property.PropertyType);
+            property.SetValue(element, Convert.ChangeType(elementInstance, property.PropertyType));
+            return elementInstance;
         }
     }
 }
