@@ -2,6 +2,7 @@
 
 namespace XayahFinances.Common.Ofx.Data
 {
+    [OfxElement("STMTTRNRS")]
     public class OfxResponseTransaction
     {
         [OfxElement("STMTTRNRS")]
@@ -9,6 +10,6 @@ namespace XayahFinances.Common.Ofx.Data
         [OfxElement("STATUS")]
         public OfxStatus Status { get; set; }
         [OfxElement("STMTRS")]
-        public OfxStatemetResponse Response { get; set; }
+        public OfxStatementResponse Response { get; set; }
     }
 }

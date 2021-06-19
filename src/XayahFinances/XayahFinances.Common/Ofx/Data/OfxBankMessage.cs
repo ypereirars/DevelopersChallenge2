@@ -2,6 +2,7 @@
 
 namespace XayahFinances.Common.Ofx.Data
 {
+    [OfxElement("BANKMSGSRSV1")]
     public class OfxBankMessage
     {
         [OfxElement("STMTTRNRS")]

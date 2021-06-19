@@ -2,6 +2,7 @@
 
 namespace XayahFinances.Common.Ofx.Data
 {
+    [OfxElement("BANKACCTFROM")]
     public class OfxAccountInfo
     {
         [OfxElement("BANKID")]
@@ -10,6 +11,5 @@ namespace XayahFinances.Common.Ofx.Data
         public string AccountNumber { get; set; }
         [OfxElement("ACCTTYPE")]
         public string AccountType { get; set; }
-
     }
 }
