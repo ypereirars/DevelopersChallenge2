@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\XayahFinances.Domain\XayahFinances.Domain.csproj" />
+    <ProjectReference Include="..\XayahFinances.Infra\XayahFinances.Infra.csproj" />
+  </ItemGroup>
+
 </Project>
