@@ -1,8 +1,9 @@
-using Xunit;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using XayahFiances.Common;
 using XayahFinances.Common.Ofx.Data;
-using System;
+using Xunit;
 
 namespace XayahFinances.Test
 {
@@ -66,6 +67,16 @@ namespace XayahFinances.Test
             Assert.NotNull(ofx.BankMessage.ResponseTranscation.Response);
             Assert.NotNull(ofx.BankMessage.ResponseTranscation.Status);
             Assert.NotNull(ofx.BankMessage.ResponseTranscation.Response.AccountInfo);
+        }
+
+        [Fact]
+        public void ShouldDeserializeListOfElements()
+        {
+            var ofx = (Ofx)_ofxSerializer.Deserialize(_ofxFile);
+
+            Assert.IsType<OfxBankList>(ofx.BankMessage.ResponseTranscation.Response.BankList);
+            Assert.IsType<List<OfxTransaction>>(ofx.BankMessage.ResponseTranscation.Response.BankList.Transactions);
+            Assert.True(ofx.BankMessage.ResponseTranscation.Response.BankList.Transactions.Count > 0);
         }
     }
 }
