@@ -3,6 +3,7 @@ using XayahFinances.Common.Ofx.Attributes;
 
 namespace XayahFinances.Common.Ofx.Data
 {
+    [OfxElement("STMTTRN")]
     public class OfxTransaction
     {
         [OfxElement("TRNTYPE")]

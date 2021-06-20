@@ -12,6 +12,7 @@ namespace XayahFinances.Common.Ofx.Data
         public DateTimeOffset StartDate { get; set; }
         [OfxElement("DTEND")]
         public DateTimeOffset EndDate { get; set; }
-        public IList<OfxTransaction> Transactions { get; set; }
+        [OfxElementList("STMTTRN")]
+        public List<OfxTransaction> Transactions { get; private set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -21,6 +22,8 @@ namespace XayahFiances.Common
         {
             string line;
             Stack ofxTags = new Stack();
+            Queue ofxQueue = new Queue();
+
             Regex bodyTagRegex = new Regex(@"<?(\/)?(\w+)[>:]?(.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             var instance = CreateInstance(_type);
@@ -46,14 +49,29 @@ namespace XayahFiances.Common
                         if (property is null)
                             continue;
 
+
+
+
                         if (property.PropertyType.IsValueType || property.PropertyType == typeof(string))
                         {
                             SetValueToElement(groups[3].Value, element, property);
                         }
                         else
                         {
+                            var attribute = GetAttributeFromProperty(property);
                             var elementInstance = InstantiateNewElement(element, property);
-                            ofxTags.Push(elementInstance);
+
+                            if (attribute.GetType() == typeof(OfxElementListAttribute))
+                            {
+                                var el = CreateInstance(property.PropertyType.GenericTypeArguments[0]);
+
+                                ofxTags.Push(el);
+                            }
+                            else
+                            {
+                                ofxTags.Push(elementInstance);
+                            }
+
                         }
                     }
                 }
@@ -71,6 +89,20 @@ namespace XayahFiances.Common
             if (GetAttributeFromElement(element)?.Name == groups[2].Value)
             {
                 ofxTags.Pop();
+                if (ofxTags.Count > 0)
+                    AddElementToList(ofxTags, groups, element);
+            }
+        }
+
+        private static void AddElementToList(Stack ofxTags, GroupCollection groups, object element)
+        {
+            var listElement = ofxTags.Peek();
+            var property = GetPropertyByAttributeName(groups[2].Value, listElement);
+            var attribute = GetAttributeFromProperty(property);
+            if (attribute.GetType() == typeof(OfxElementListAttribute))
+            {
+                var obj = property.GetValue(listElement);
+                property.PropertyType.GetMethod("Add").Invoke(obj, new[] { element });
             }
         }
 
@@ -95,11 +127,17 @@ namespace XayahFiances.Common
         private static void SetValueToElement(string attributeValue, object element, PropertyInfo property)
         {
             object value = attributeValue;
+            var typeCode = Type.GetTypeCode(property.PropertyType);
+
             if (property.PropertyType == typeof(DateTimeOffset))
             {
                 Regex dateRegex = new Regex(@"(\d+)\[([-+]\d+){0,3}.*\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 attributeValue = dateRegex.Replace(attributeValue, "$1 $2");
                 value = DateTimeOffset.ParseExact(attributeValue, "yyyyMMddHHmmss zz", null);
+            }
+            else if (property.PropertyType == typeof(decimal))
+            {
+                value = decimal.Parse((string)attributeValue, CultureInfo.InvariantCulture);
             }
 
             property.SetValue(element, Convert.ChangeType(value, property.PropertyType));
@@ -107,9 +145,17 @@ namespace XayahFiances.Common
 
         private static object InstantiateNewElement(object element, PropertyInfo property)
         {
-            var elementInstance = CreateInstance(property.PropertyType);
-            property.SetValue(element, Convert.ChangeType(elementInstance, property.PropertyType));
-            return elementInstance;
+            var obj = property.GetValue(element);
+
+            if (obj is null)
+            {
+                var elementInstance = CreateInstance(property.PropertyType);
+
+                property.SetValue(element, Convert.ChangeType(elementInstance, property.PropertyType));
+                return elementInstance;
+            }
+
+            return obj;
         }
     }
 }
