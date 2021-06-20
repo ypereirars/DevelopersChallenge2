@@ -11,7 +11,9 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using XayahFinances.Domain.Interfaces.Repositories;
+using XayahFinances.Domain.Interfaces.Services;
 using XayahFinances.Infra.Repositories;
+using XayahFinances.Services;
 
 namespace XayahFinances.Web
 {
@@ -33,6 +35,9 @@ namespace XayahFinances.Web
 
             services.AddScoped<IBankAccountRepository, BankAccountRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+            services.AddScoped<IBankAccountService, BankAccountService>();
+            services.AddScoped<ITransactionService, TransactionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
