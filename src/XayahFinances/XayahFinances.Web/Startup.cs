@@ -6,8 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using XayahFinances.Domain.Interfaces.Repositories;
+using XayahFinances.Infra.Repositories;
 
 namespace XayahFinances.Web
 {
@@ -24,6 +28,11 @@ namespace XayahFinances.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddScoped<IDbConnection, SqlConnection>(provider => new SqlConnection(Configuration.GetConnectionString("XayahFinances")));
+
+            services.AddScoped<IBankAccountRepository, BankAccountRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
