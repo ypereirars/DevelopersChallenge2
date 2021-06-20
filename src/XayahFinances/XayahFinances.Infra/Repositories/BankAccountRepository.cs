@@ -61,10 +61,11 @@ namespace XayahFinances.Infra.Repositories
         public override void Update(BankAccount entity)
         {
             var query = @"
-                UPDATE bank_accounts SET
-                    bank_id as @BankId,
-                    account_number as @AccountNumber,
-                    account_type as @AccountType";
+                UPDATE bank_accounts
+                SET
+                    bank_id=@BankId,
+                    account_number=@AccountNumber,
+                    account_type=@AccountType";
 
             Connection.Query(query);
         }
