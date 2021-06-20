@@ -11,29 +11,29 @@ namespace XayahFinances.Services
 
         public BaseService(IBaseRepository<T> repository) => Repository = repository;
 
-        public int Create(T entidade)
+        public long Create(T entity)
         {
-            throw new NotImplementedException();
+            return Repository.Create(entity);
         }
 
-        public void Delete(int identificador)
+        public void Delete(long id)
         {
-            throw new NotImplementedException();
+            Repository.Delete(id);
         }
 
-        public T Get(int identificador)
+        public T Get(long id)
         {
-            throw new NotImplementedException();
+            return Repository.Get(id);
         }
 
         public System.Collections.Generic.IEnumerable<T> Get()
         {
-            throw new NotImplementedException();
+            return Repository.Get();
         }
 
-        public void Update(T entidade)
+        public void Update(T entity)
         {
-            throw new NotImplementedException();
+            Repository.Update(entity);
         }
     }
 }

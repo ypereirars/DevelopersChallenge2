@@ -4,10 +4,10 @@ namespace XayahFinances.Domain.Interfaces.Services
 {
     public interface IBaseService<T> where T: Entities.Entity
     {
-        int Create(T entidade);
-        T Get(int identificador);
+        long Create(T entity);
+        T Get(long id);
         IEnumerable<T> Get();
-        void Update(T entidade);
-        void Delete(int identificador);
+        void Update(T entity);
+        void Delete(long id);
     }
 }

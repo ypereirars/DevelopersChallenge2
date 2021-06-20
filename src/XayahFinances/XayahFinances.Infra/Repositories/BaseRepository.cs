@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using XayahFinances.Domain.Entities;
 using XayahFinances.Domain.Interfaces.Repositories;
@@ -12,29 +11,10 @@ namespace XayahFinances.Infra.Repositories
 
         public BaseRepository(IDbConnection connection) => Connection = connection;
 
-        public int Create(T entidade)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(int identificador)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T Get(int identificador)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<T> Get()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(T entidade)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract long Create(T entity);
+        public abstract void Delete(long id);
+        public abstract T Get(long id);
+        public abstract IEnumerable<T> Get();
+        public abstract void Update(T entity);
     }
 }
