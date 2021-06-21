@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\XayahFinances.Common\XayahFinances.Common.csproj" />
     <ProjectReference Include="..\XayahFinances.Services\XayahFinances.Services.csproj" />
   </ItemGroup>
 
